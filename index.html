@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+
+<title>Fast Paced Drupal 8</title>
+
+<meta name="description" content="An overview of tools available for web creators">
+<meta name="author" content="Erin Marchak">
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/reveal.js/2.6.2/css/reveal.min.css">
+<link rel="stylesheet" href="css/theme/myplanet.css" id="theme">
+
+<!-- For syntax highlighting -->
+<link rel="stylesheet" href="lib/css/zenburn.css">
+
+<script>
+//-- If the query includes 'print-pdf', include the PDF print sheet
+if( window.location.search.match( /print-pdf/gi ) ) {
+var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = 'css/print/pdf.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+}
+</script>
+
+<!--[if lt IE 9]>
+<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script>
+<![endif]-->
+</head>
+
+<body>
+
+<div class="reveal">
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+<section data-state="black">
+<h1>Fast Paced Drupal 8</h1>
+<p><em>Speed up with composer, console and services</em></p>
+<p><small><a href="http://twitter.com/emarchak">@emarchak</a> / <a href="http://twitter.com/myplanetHQ">@myplanetHQ</a></small></p>
+<p><small><a href="http://github.com/emarchak/fastpaced_drupal8">github.com/emarchak/fastpaced_drupal8</a> / <a href="http://github.com/emarchak/fastpaced_videos">github.com/emarchak/fastpaced_videos</a></small></p>
+</section>
+<! Who -------------------------------------------------------------------------------------->
+
+<section data-state="black no-logo">
+<a href="http://myplanet.com"><img src="img/mp_logo_wt.png" class="nude" alt="Myplanet"/></a>
+<p><a href="http://twitter.com/myplanetHQ">@myplanetHQ</a></p>
+</section>
+
+<section data-state="pink">
+<a href="http://myplanet.io"><img src="img/erin.png" class="nude" alt="Erin Marchak"/></a>
+<p><a href="http://twitter.com/emarchak">@emarchak</a><p>
+</section>
+
+<! Contents -------------------------------------------------------------------------------------->
+
+<section>
+<h2>Why Change for D8?</h2>
+<ol>
+<li class="fragment">Speed up your development process</li>
+<li class="fragment">Play well with others</li>
+</ol>
+</section>
+
+<section>
+<h2>Dependencies</h2>
+<ul>
+<dt><a href="https://getcomposer.org">Composer</a></dt>
+<dd>Pependency manager for PHP</dd>
+<dt><a href="http://drupalconsole.com">Drupal Console</a></dt>
+<dd>Extends Symfony console for boilerplates and interations.</dd>
+<dt><a href="http://docs.guzzlephp.org/">Guzzle (in core)</a></dt>
+<dd>Guzzle is a PHP HTTP client.</dd>
+<dt>Familiarity with Drupal 7 development</dt>
+</ul>
+
+</section>
+
+
+<section>
+<h2>Overview</h2>
+
+<ol>
+<li>Build using Composer</li>
+<li class="fragment">Install using Console</li>
+<li class="fragment">Create a Module using Console</li>
+<li class="fragment">Export Content Types using Console</li>
+<li class="fragment">Export Views using Console</li>
+<li class="fragment">Create a Service using Console</li>
+<li class="fragment">Import Nodes using Guzzle</li>
+<li class="fragment">Create Admin Form using Console</li>
+<li class="fragment">Include your module using Composer</li>
+</ol>
+</section>
+
+
+<section data-state="black">
+<h1>Witness Me!</h1>
+</section>
+
+<! 1. Build using Composer ------------------------------------------------------------------>
+<section>
+<p><strong>1. Build using Composer</strong></p>
+
+<p>Download Drupal to a docroot so we can control the config.</p>
+
+<pre><code data-trim data-noescape>$ composer create-project drupal/drupal fastpaced/docroot 8.0.2
+
+</code></pre>
+</section>
+
+<section>
+<p>Use console to install <code data-trim data-noescape>composer_manager</code> which lets us use composer for drupal dependencies</p>
+
+<pre><code data-trim data-noescape>
+$ cd fastpaced/docroot
+$ drupal module:download composer_manager
+$ php modules/contrib/composer_manager/scripts/init.php
+</pre></code>
+<p>Add to installer paths to let us download modules to ./docroot/modules/contrib</p>
+<pre><code data-trim data-noescape>
+$ composer require composer/installers:~1.0 --update-no-dev
+
+"installer-paths": { "modules/contrib/{$name}": ["vendor/package”] }
+</code></pre>
+</section>
+
+<section>
+
+<p>Install some dependencies!</p>
+
+<pre><code data-trim data-noescape>$ composer require composer_manager:8.1.0-rc1
+$ composer require drupal/admin_toolbar:8.1.11
+$ composer require drupal/video_embed_field:8.1.0-rc3
+</code></pre>
+
+</section>
+
+
+
+<! 2. Install using Console -------------------------------------------------------------------->
+<section>
+<p><strong>2. Install using Console</strong></p>
+<pre><code data-trim data-noescape>$ drupal site:install
+$ drupal module:install composer_manager
+$ drupal module:install admin_toolbar
+$ drupal module:install video_embed_field
+</code></pre>
+</section>
+
+<section>
+<p>Change sync directory in settings.php to export config to ./docroot/config/sync</p>
+
+<pre><code data-trim data-noescape>$config_directories['sync'] = '../config/sync';
+</code></pre>
+</section>
+
+
+
+
+<! 3. Create a Module using Console ------------------------------------------------------------------------>
+
+<section>
+<p><strong>3. Create a Module using Console</strong></p>
+
+<p>Let's create a fast-paced module...</p>
+
+<pre><code data-trim data-noescape>$ drupal generate:module
+
+Enter the new module name:
+&gt; Fast paced videos 
+</code></pre>
+
+</section>
+
+<section>
+<p>... and a speedy content type!</p>
+
+<pre><code data-trim data-noescape>$ drupal generate:entity:bundle
+
+Enter the module name [admin_toolbar]:
+&gt; fastpaced_videos
+
+Enter the machine name of your new content type [default]:
+&gt; video
+
+$ drupal module:install fastpaced_videos
+</code></pre>
+
+</section>
+
+<! 4. Export Content Types using Console -------------------------------------------------------------------->
+<section>
+<p><strong>4. Export Content Types using Console</strong></p>
+
+<p>Log into the site and configure the content type as needed, before you export it.</p>
+
+<pre><code data-trim data-noescape>$ drupal config:export:content:type
+&gt; video
+
+Export content type in module as an optional configuration (yes/no) [yes]:
+&gt; no
+</code></pre>
+
+</section>
+
+<section>
+<p>Can we generate some example content? Yes we can.</p>
+
+<pre><code data-trim data-noescape>$ drupal create:nodes
+</code></pre>
+
+</section>
+
+<! 5. Export Views using Console -------------------------------------------------------------------->
+<section>
+<p><strong>5. Export Views using Console</strong></p>
+
+<p>Sadly, you still have to point-and-click your way through views.</p>
+
+<p>But once that's done, we can export it in a flash!</p>
+
+<pre><code data-trim data-noescape>$ drupal config:export:view
+View to be exported [Archive]:
+&gt; Videos
+
+Export view in module as an optional configuration (yes/no) [yes]:
+&gt; no
+
+Include view module dependencies in module info YAML file (yes/no) [yes]:
+&gt; y
+</code></pre>
+
+</section>
+
+
+<! 6. Create a Service using Console -------------------------------------------------------------------->
+<section>
+<p><strong>6. Create a Service using Console</strong></p>
+
+<p>We'll be importing videos using guzzle, so we'll need to create a service to save them.</p>
+
+<pre><code data-trim data-noescape>$ drupal generate:service
+Enter the service name [fastpaced_videos.default]:
+&gt; fastpaced_videos.import
+
+Enter the Class name [DefaultService]:
+&gt; ImportService
+
+Create an interface (yes/no) [yes]:
+&gt; no
+
+Do you want to load services from the container (yes/no) [no]:
+&gt; yes
+
+Enter your service [ ]:
+&gt; entity.query
+&gt; manager
+</code></pre>
+
+<p>Refer to the repo for further changes to fastpaced_videos/src/ImportServiceInterface.php</p>
+
+
+</section>
+
+
+<! 7. Import Nodes using Guzzle -------------------------------------------------------------------->
+<section>
+<p><strong>7. Import Nodes using Guzzle</strong></p>
+<ul>
+<li>Some parts of Drupal 8 are still procedural like 7. hook_theme and hook_cron are an example.</li>
+
+<li>Add a fastpaced_videos.module and fastpaced_videos_cron().</li>
+
+<li>Refer to the repo for further changes to fastpaced_videos.module</li></ul>
+
+
+</section>
+
+
+<! 7. Import Nodes using Guzzle -------------------------------------------------------------------->
+<section>
+<p><strong>8. Create Admin form using Console</strong></p>
+
+<pre><code data-trim data-noescape>$ drupal generate:form:config
+
+Enter the Form Class name [DefaultForm]:
+&gt; ImportSettingsForm    
+
+Do you want to generate a form structure? (yes/no) [yes]:
+&gt; y
+
+Type:          number
+Input label:   Import Max
+Description:   Maximum amount of nodes to import pre cron run
+Default value: 10
+
+Type:          textfield
+Input label:   Search Terms
+Description:   Feed to import from
+Default value: macaframa
+
+Update routing file (yes/no) [yes]:
+&gt; yes   
+
+
+Generate a menu link (yes/no) [yes]:
+&gt; yes
+
+A title for the menu link [ImportSettingsForm]:
+&gt; Fast Paced Import Settings
+
+Menu parent [system.admin_config_system]:
+&gt; system.admin_config_services
+</code></pre>
+
+
+</section>
+
+<! Thank you -------------------------------------------------------------------------------------->
+
+<section>
+<h2>Ride eternal, shiny and chrome.</h2>
+<p>
+<a href="http://twitter.com/emarchak">@emarchak</a> / <a href="http://twitter.com/myplanetHQ">@myplanetHQ</a>
+</p>
+<p><small><a href="http://github.com/emarchak/fastpaced_drupal8">github.com/emarchak/fastpaced_drupal8</a> / 
+<a href="http://github.com/emarchak/fastpaced_videos">github.com/emarchak/fastpaced_videos</a></small></p>
+</section>
+
+</div>
+
+</div>
+
+<script src="//cdn.jsdelivr.net/reveal.js/2.6.2/lib/js/head.min.js"></script>
+<script src="//cdn.jsdelivr.net/reveal.js/2.6.2/js/reveal.min.js"></script>
+
+<script>
+
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+controls: false,
+progress: true,
+history: true,
+center: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+transition: 'fade',
+
+// Parallax scrolling
+// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+// parallaxBackgroundSize: '2100px 900px',
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+{ src: '//cdn.jsdelivr.net/reveal.js/2.6.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+{ src: '//cdn.jsdelivr.net/reveal.js/2.6.2/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: '//cdn.jsdelivr.net/reveal.js/2.6.2/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: '//cdn.jsdelivr.net/reveal.js/2.6.2/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+{ src: '//cdn.jsdelivr.net/reveal.js/2.6.2/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+{ src: '//cdn.jsdelivr.net/reveal.js/2.6.2/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+]
+});
+
+</script>
+
+</body>
+</html>

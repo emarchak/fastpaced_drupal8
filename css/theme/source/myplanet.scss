@@ -1,0 +1,125 @@
+/**
+ * Myplanet theme for reveal.js presentations
+ */
+
+
+// Default mixins and settings -----------------
+@import "../template/mixins";
+@import "../template/settings";
+// ---------------------------------------------
+
+
+
+// Include theme-specific fonts
+// Brand colors --------------------------------
+$myplanet_pink:   #ea3d67;
+$myplanet_teal:   #58c0a2;
+$myplanet_purple: #5F5CB1;
+$myplanet_black:  #000000;
+$myplanet_orange: #f05a28;
+
+// Override theme settings (see ../template/settings.scss)
+$mainFont: 'HelveticaNeue', sans-serif;
+$mainColor: #333;
+$headingFont: 'HelveticaNeue', sans-serif;
+$headingColor: #000;
+$headingTextShadow: none;
+$headingTextTransform: none;
+$backgroundColor: #fff;
+$linkColor: $myplanet_orange;
+$linkColorHover: lighten( $linkColor, 20% );
+$selectionBackgroundColor: rgba(0, 0, 0, 0.99);
+
+
+
+// Theme template ------------------------------
+@import "../template/theme";
+// ---------------------------------------------
+
+
+
+body {
+  background-image: url('/img/mp_logo_bk.png');
+  background-size: 100px;
+  background-repeat: no-repeat;
+  background-position: 95% 95%;
+  .reveal {
+    h1, h2, h3, h4, h5, h6 {
+      font-weight:bold;
+      text-shadow: none;
+      line-height: 1.25;
+    }
+    h1 { font-size: 3.27em; line-height:1; }
+    h2 { font-size: 1.61em;	}
+    h3 { font-size: 1em;	}
+    h4 { font-size: 1em; font-style: italic; }
+    img {
+      width: 60%;
+    }
+    .lite {
+      opacity: 0.25;
+    }
+    code {
+      font-family: Consolas;
+    }
+  }
+}
+
+
+// slide themes
+.pink body,
+.teal body,
+.purple body,
+.orange body,
+.black body {
+  background-image: url('/img/mp_logo_wt.png');
+  background-color: $myplanet_black;
+  .reveal {
+    color: #fff;
+    h1, h2, h3, h4, h5, h6 {
+      color: #fff;
+    }
+    a,
+    a:not(.image) {
+      color: $myplanet_black;
+      &:focus,
+      &:hover {
+        $linkColorHover: lighten( #fff, 20% );
+      }
+    }
+  }
+}
+.no-logo body  { background-image: none !important;  }
+.pink body     { background-color: $myplanet_pink;   }
+.teal body     { background-color: $myplanet_teal;   }
+.purple body   { background-color: $myplanet_purple; }
+.orange body   { background-color: $myplanet_orange; }
+.black body .reveal {
+  a,
+  a:not(.image) {
+    color: $linkColor;
+    &:focus,
+    &:hover {
+      $linkColorHover: lighten( $linkColor, 20% );
+    }
+  }
+}
+
+
+
+// helper classes
+.reveal {
+  img,
+  .nude {
+    background-color: transparent !important;
+    box-shadow: 0 0 0 transparent !important;
+    border-width: 0!important;
+  }
+  .left {
+    float: left;
+  }
+  .right {
+    float: right;
+  }
+
+}

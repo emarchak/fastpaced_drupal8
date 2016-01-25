@@ -1,0 +1,389 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    background-color: white;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title>Fast Paced Drupal 8</title>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax:{inlineMath:[['$$$','$$$']]}});</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<h1>Fast Paced Drupal 8</h1>
+
+<p><em>An overview of using composer, console and services to speed up development</em></p>
+
+<p><a href="http://github.com/emarchak/fastpaced-drupal8">github.com/emarchak/fastpaced-drupal8</a>
+[github.com/emarchak/fastpaced-drupal8fastpaced_videos.git</p>
+
+<p><a href="http://myplanet.com">Myplanet</a></p>
+
+<p><a href="http://twitter.com/emarchak">@emarchak</a></p>
+
+<h1>Why Change for D8?</h1>
+
+<ol>
+<li>Speed up your development process</li>
+<li>Play well with others</li>
+</ol>
+
+
+<h2>Overview</h2>
+
+<ol>
+<li>Build using Composer</li>
+<li>Install using Console</li>
+<li>Create a Module using Console</li>
+<li>Export Content Types using Console</li>
+<li>Export Views using Console</li>
+<li>Create a Service using Console</li>
+<li>Import Nodes using Guzzle</li>
+<li>Create Admin Form using Console</li>
+<li>Include your module using Composer</li>
+</ol>
+
+
+<h2>Dependencies</h2>
+
+<ul>
+<li><a href="https://getcomposer.org">Composer</a>
+
+<ul>
+<li>Pependency manager for PHP</li>
+</ul>
+</li>
+<li><a href="http://drupalconsole.com">Drupal Console</a>
+
+<ul>
+<li>Extends Symfony console for boilerplates and interations.</li>
+</ul>
+</li>
+<li><a href="http://docs.guzzlephp.org/">Guzzle (in core)</a>
+
+<ul>
+<li>Guzzle is a PHP HTTP client.</li>
+</ul>
+</li>
+<li>Familiarity with Drupal 7 development process</li>
+</ul>
+
+
+<h1>1. Build using Composer</h1>
+
+<p>Download Drupal to a docroot so we can control the config.
+Use console to install <code>composer_manager</code> which lets us use composer for drupal dependencies</p>
+
+<pre><code>$ composer create-project drupal/drupal fastpaced/docroot 8.0.2
+$ cd fastpaced/docroot
+$ drupal module:download composer_manager
+$ drupal module:install composer_manager
+$ php modules/contrib/composer_manager/scripts/init.php
+</code></pre>
+
+<p>Add to installer paths to let us download modules to ./docroot/modules/contrib</p>
+
+<pre><code>$ composer require composer/installers:~1.0 --update-no-dev
+
+"installer-paths": { "modules/contrib/{$name}": ["vendor/package”] }
+</code></pre>
+
+<p>Install some dependencies!</p>
+
+<pre><code>$ composer require composer_manager:8.1.0-rc1
+$ composer require drupal/admin_toolbar:8.1.11
+$ composer require drupal/video_embed_field:8.1.0-rc3
+</code></pre>
+
+<h1>2. Install using Console</h1>
+
+<pre><code>$ drupal site:install
+$ drupal module:install composer_manager
+$ drupal module:install admin_toolbar
+$ drupal module:install video_embed_field
+</code></pre>
+
+<p>Change sync directory in settings.php to export config to ./docroot/config/sync</p>
+
+<pre><code>$config_directories['sync'] = '../config/sync';
+</code></pre>
+
+<h1>3. Create a Module using Console</h1>
+
+<p>Let's create a fast-paced module...</p>
+
+<pre><code>$ drupal generate:module
+
+Enter the new module name:
+&gt; Fast paced videos 
+</code></pre>
+
+<p>.. and a speedy content type!</p>
+
+<pre><code>$ drupal generate:entity:bundle
+
+Enter the module name [admin_toolbar]:
+&gt; fastpaced_videos
+
+Enter the machine name of your new content type [default]:
+&gt; video
+
+$ drupal module:install fastpaced_videos
+</code></pre>
+
+<h1>4. Export Content Types using Console</h1>
+
+<p>Log into the site and configure the content type as needed, before you export it.</p>
+
+<pre><code>$ drupal config:export:content:type
+&gt; video
+
+Export content type in module as an optional configuration (yes/no) [yes]:
+&gt; no
+</code></pre>
+
+<p>Can we generate some example content? Yes we can.</p>
+
+<pre><code>$ drupal create:nodes
+</code></pre>
+
+<h1>5. Export Views using Console</h1>
+
+<p>Sadly, you still have to point-and-click your way through views.</p>
+
+<p>But once that's done, we can export it in a flash!</p>
+
+<pre><code>$ drupal config:export:view
+View to be exported [Archive]:
+&gt; Videos
+
+Export view in module as an optional configuration (yes/no) [yes]:
+&gt; no
+
+Include view module dependencies in module info YAML file (yes/no) [yes]:
+&gt; y
+</code></pre>
+
+<h1>6. Create a Service using Console</h1>
+
+<p>We'll be importing videos using guzzle, so we'll need to create a service to save them.</p>
+
+<pre><code>$ drupal generate:service
+Enter the service name [fastpaced_videos.default]:
+&gt; fastpaced_videos.import
+
+Enter the Class name [DefaultService]:
+&gt; ImportService
+
+Create an interface (yes/no) [yes]:
+&gt; no
+
+Do you want to load services from the container (yes/no) [no]:
+&gt; yes
+
+Enter your service [ ]:
+&gt; entity.query
+&gt; manager
+</code></pre>
+
+<p>Refer to the repo for further changes to fastpaced_videos/src/ImportServiceInterface.php</p>
+
+<h1>7. Import Nodes using Guzzle</h1>
+
+<p>Some parts of Drupal 8 are still procedural like 7. hook_theme and hook_cron are an example.</p>
+
+<p>Add a fastpaced_videos.module and fastpaced_videos_cron().</p>
+
+<p>Refer to the repo for further changes to fastpaced_videos.module</p>
+
+<h1>8. Create Admin form using Console</h1>
+
+<pre><code>$ drupal generate:form:config
+
+Enter the Form Class name [DefaultForm]:
+&gt; ImportSettingsForm    
+
+Do you want to generate a form structure? (yes/no) [yes]:
+&gt; y
+
+Type:          number
+Input label:   Import Max
+Description:   Maximum amount of nodes to import pre cron run
+Default value: 10
+
+Type:          textfield
+Input label:   Search Terms
+Description:   Feed to import from
+Default value: macaframa
+
+Update routing file (yes/no) [yes]:
+&gt; yes   
+
+
+Generate a menu link (yes/no) [yes]:
+&gt; yes
+
+A title for the menu link [ImportSettingsForm]:
+&gt; Fast Paced Import Settings
+
+Menu parent [system.admin_config_system]:
+&gt; system.admin_config_services
+</code></pre>
+
+<h1>9. Include your module using Composer</h1>
+
+<h1>Put the pedal to the medal</h1>
+
+<p><a href="http://twitter.com/emarchak">@emarchak</a> / <a href="http://twitter.com/myplanetHQ">@myplanetHQ</a></p>
+
+<p><a href="http://github.com/emarchak/fastpaced-drupal8">github.com/emarchak/fastpaced-drupal8</a></p>
+
+<p><a href="http://github.com/emarchak/fastpaced-videos">github.com/emarchak/fastpaced-videos</a></p>
+</body>
+</html>
