@@ -63,42 +63,42 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
 <! Contents -------------------------------------------------------------------------------------->
 
 <section>
-<h2>Why Change for D8?</h2>
-<ol>
-<li class="fragment">Speed up your development process</li>
-<li class="fragment">Play well with others</li>
-</ol>
+  <h2>Why Change for D8?</h2>
+  <ol>
+  <li class="fragment">Speed up your development process</li>
+  <li class="fragment">Play well with others</li>
+  </ol>
 </section>
 
 <section>
-<h2>Dependencies</h2>
-<ul>
-<dt><a href="https://getcomposer.org">Composer</a></dt>
-<dd>Pependency manager for PHP</dd>
-<dt><a href="http://drupalconsole.com">Drupal Console</a></dt>
-<dd>Extends Symfony console for boilerplates and interations.</dd>
-<dt><a href="http://docs.guzzlephp.org/">Guzzle (in core)</a></dt>
-<dd>Guzzle is a PHP HTTP client.</dd>
-<dt>Familiarity with Drupal 7 development</dt>
-</ul>
+  <h2>Dependencies</h2>
+  <ul>
+  <dt><a href="https://getcomposer.org">Composer</a></dt>
+  <dd><small>Dependency manager for PHP</small></dd>
+  <dt><a href="http://drupalconsole.com">Drupal Console</a></dt>
+  <dd><small>Extends Symfony console for boilerplates and interations.</small></dd>
+  <dt><a href="http://docs.guzzlephp.org/">Guzzle (in core)</a></dt>
+  <dd><small>Guzzle is a PHP HTTP client.</small></dd>
+  <dt>Familiarity with Drupal 7 development</dt>
+  </ul>
 
 </section>
 
 
 <section>
 <h2>Overview</h2>
-
-<ol>
-<li>Build using Composer</li>
-<li class="fragment">Install using Console</li>
-<li class="fragment">Create a Module using Console</li>
-<li class="fragment">Export Content Types using Console</li>
-<li class="fragment">Export Views using Console</li>
-<li class="fragment">Create a Service using Console</li>
-<li class="fragment">Import Nodes using Guzzle</li>
-<li class="fragment">Create Admin Form using Console</li>
-<li class="fragment">Include your module using Composer</li>
-</ol>
+  
+  <ol>
+  <li>Build using Composer</li>
+  <li class="fragment">Install using Console</li>
+  <li class="fragment">Create a Module using Console</li>
+  <li class="fragment">Export Content Types using Console</li>
+  <li class="fragment">Export Views using Console</li>
+  <li class="fragment">Import Nodes using Guzzle</li>
+  <li class="fragment">Create a Service using Console</li>
+  <li class="fragment">Create Admin Form using Console</li>
+  <li class="fragment">Include your module using Composer</li>
+  </ol>
 </section>
 
 
@@ -112,34 +112,57 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
 
 <p>Download Drupal to a docroot so we can control the config.</p>
 
-<pre><code data-trim data-noescape>$ composer create-project drupal/drupal fastpaced/docroot 8.0.2
-
+<pre><code data-trim data-noescape>$ composer create-project drupal/drupal docroot 8.0.2
+$ cd docroot
 </code></pre>
 </section>
-
+<! -- >
 <section>
-<p>Use console to install <code data-trim data-noescape>composer_manager</code> which lets us use composer for drupal dependencies</p>
-
+  <p>Managing patches using composer<p>
+  <p><small>For Drupal 8.0.5 only, we'll need to <a href="https://www.drupal.org/node/2664274">patch core</a>, but any module can be patched. </small></p>
 <pre><code data-trim data-noescape>
-$ cd fastpaced/docroot
-$ drupal module:download composer_manager
-$ php modules/contrib/composer_manager/scripts/init.php
+$ composer require cweagans/composer-patches --no-update</code></pre>
+<pre><code data-trim data-noescape>"extra": {...
+  "patches": { 
+    "drupal/drupal": {
+      "Combination of --prefer-dist and .gitattributes confuses our vendor test cleanup": "https://www.drupal.org/files/issues/2664274-37.patch"
+    }
+  }
+}
+</code></pre>
+</section>
+<! -- >
+<section>
+  <p>Add to installer paths to let us download modules to ./docroot/modules/contrib</p>
+<pre><code data-trim data-noescape>"extra": {...
+  "installer-paths": { 
+    "modules/contrib/{$name}": [
+      "type:drupal-module"
+    ] 
+  }
+},
+</code></pre>
+</section>
+<! -- >
+<section>
+  <p>Add <a href="https://packagist.drupal-composer.org">Drupal Composer</a> as a repo,<br/> so we can download drupal modules.</p>
+  <pre><code data-trim data-noescape>"repositories": [ { 
+    "type": "composer", 
+    "url": "https://packagist.drupal-composer.org"
+} ]
 </pre></code>
-<p>Add to installer paths to let us download modules to ./docroot/modules/contrib</p>
-<pre><code data-trim data-noescape>
-$ composer require composer/installers:~1.0 --update-no-dev
 
-"installer-paths": { "modules/contrib/{$name}": ["vendor/package”] }
-</code></pre>
 </section>
 
+<! -- >
 <section>
 
-<p>Install some dependencies!</p>
-
-<pre><code data-trim data-noescape>$ composer require composer_manager:8.1.0-rc1
-$ composer require drupal/admin_toolbar:8.1.11
-$ composer require drupal/video_embed_field:8.1.0-rc3
+<p>Install some drupal modules!</p>
+<p><small>Composer Manager allows us to manage drupal modules as composer packaged,<br/> and we'll be using the <code>video_embed_field</code> in our demo.</small></p> 
+<pre><code data-trim data-noescape>$ composer require drupal/composer_manager:8.1.0-rc1 --no-update
+$ composer require drupal/video_embed_field:8.1.0-rc5 --no-update
+$ composer update
+$ php modules/contrib/composer_manager/scripts/init.php
 </code></pre>
 
 </section>
@@ -151,15 +174,15 @@ $ composer require drupal/video_embed_field:8.1.0-rc3
 <p><strong>2. Install using Console</strong></p>
 <pre><code data-trim data-noescape>$ drupal site:install
 $ drupal module:install composer_manager
-$ drupal module:install admin_toolbar
 $ drupal module:install video_embed_field
 </code></pre>
 </section>
 
 <section>
-<p>Change sync directory in settings.php to export config to ./docroot/config/sync</p>
+<p>Change sync directory in settings.php to export config to <code>../docroot/config/sync</code>,<br/> and add <a href="https://www.drupal.org/node/2410395">Symfony's new trusted host patterns</a>.</p>
 
 <pre><code data-trim data-noescape>$config_directories['sync'] = '../config/sync';
+$settings['trusted_host_patterns'] = [ '^fastpaced.local$' ];
 </code></pre>
 </section>
 
@@ -176,7 +199,7 @@ $ drupal module:install video_embed_field
 <pre><code data-trim data-noescape>$ drupal generate:module
 
 Enter the new module name:
-&gt; Fast paced videos 
+&gt; Fastpaced videos 
 </code></pre>
 
 </section>
@@ -241,10 +264,32 @@ Include view module dependencies in module info YAML file (yes/no) [yes]:
 
 </section>
 
-
-<! 6. Create a Service using Console -------------------------------------------------------------------->
+<! 6. Import Nodes using Guzzle -------------------------------------------------------------------->
 <section>
-<p><strong>6. Create a Service using Console</strong></p>
+<p><strong>6. Import Nodes using Guzzle</strong></p>
+
+<p>Add <code>fastpaced_videos_cron()</code>.</p>
+ <pre><code data-trim data-noescape>/**
+ * @file
+ * Contains fastpaced_videos.module.
+ */
+
+use Drupal\Core\Url;
+use Drupal\Component\Serialization\Json;
+/**
+ * Implements hook_cron().
+ */
+function fastpaced_videos_cron() {...}</code></pre>
+
+<p><small>Some parts of Drupal 8 are still procedural like 7, <br/><code>hook_theme</code> and <code>hook_cron</code>, for example.</small></p>
+<p><small><a href="http://github.com/emarchak/fastpaced_videos">Refer to the repo</a> for further changes to <code>fastpaced_videos.module</code></small></p>
+
+
+</section>
+
+<! 7. Create a Service using Console -------------------------------------------------------------------->
+<section>
+<p><strong>7. Create a Service using Console</strong></p>
 
 <p>We'll be importing videos using guzzle, so we'll need to create a service to save them.</p>
 
@@ -266,27 +311,14 @@ Enter your service [ ]:
 &gt; manager
 </code></pre>
 
-<p>Refer to the repo for further changes to fastpaced_videos/src/ImportServiceInterface.php</p>
+<p><small><a href="http://github.com/emarchak/fastpaced_videos">Refer to the repo</a> for further changes to <code>fastpaced_videos/src/ImportServiceInterface.php</code></small></p>
 
 
 </section>
 
 
-<! 7. Import Nodes using Guzzle -------------------------------------------------------------------->
-<section>
-<p><strong>7. Import Nodes using Guzzle</strong></p>
-<ul>
-<li>Some parts of Drupal 8 are still procedural like 7. hook_theme and hook_cron are an example.</li>
 
-<li>Add a fastpaced_videos.module and fastpaced_videos_cron().</li>
-
-<li>Refer to the repo for further changes to fastpaced_videos.module</li></ul>
-
-
-</section>
-
-
-<! 7. Import Nodes using Guzzle -------------------------------------------------------------------->
+<! 8. Create Admin form using Console -------------------------------------------------------------------->
 <section>
 <p><strong>8. Create Admin form using Console</strong></p>
 
@@ -323,6 +355,20 @@ Menu parent [system.admin_config_system]:
 </code></pre>
 
 
+</section>
+
+<! 9. Add your custom module to composer -------------------------------------------------------------------------------------->
+<section>
+  <p><strong>9. Add your custom module to composer</strong></p>
+    <p>Add <a href="http://github.com/emarchak/fastpaced_videos">our github repo</a> as a repo, <br/>so we can can download our custom module.</p>
+  <pre><code data-trim data-noescape>"repositories": [... { 
+  "type": "git", 
+  "url": "https://github.com/emarchak/fastpaced_videos.git"
+}]
+</code></pre>
+  <pre><code data-trim data-noescape>$ composer require emarchak/fastpaced_videos
+</pre></code>
+  
 </section>
 
 <! Thank you -------------------------------------------------------------------------------------->
