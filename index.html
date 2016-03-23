@@ -46,7 +46,7 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
 <h1>Fast Paced Drupal 8</h1>
 <p><em>Speed up with composer, console and services</em></p>
 <p><small><a href="http://twitter.com/emarchak">@emarchak</a> / <a href="http://twitter.com/myplanetHQ">@myplanetHQ</a></small></p>
-<p><small><a href="http://emarchak.github.io/fastpaced_drupal8/">emarchak.github.io/fastpaced_drupal8/</a> / <a href="http://github.com/emarchak/fastpaced_videos">github.com/emarchak/fastpaced_videos</a></small></p>
+<p><small><a href="http://emarchak.github.io/fastpaced_drupal8/">emarchak.github.io/fastpaced_drupal8</a> / <a href="http://github.com/emarchak/fastpaced_videos">github.com/emarchak/fastpaced_videos</a></small></p>
 </section>
 <! Who -------------------------------------------------------------------------------------->
 
@@ -75,8 +75,8 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
   <ul>
   <dt><a href="https://getcomposer.org">Composer</a></dt>
   <dd><small>Dependency manager for PHP</small></dd>
-  <dt><a href="http://drupalconsole.com">Drupal Console</a></dt>
-  <dd><small>Extends Symfony console for boilerplates and interations.</small></dd>
+  <dt><a href="http://Drupalconsole.com">Drupal Console</a></dt>
+  <dd><small>Extends Symfony console for boilerplates and interactions.</small></dd>
   <dt><a href="http://docs.guzzlephp.org/">Guzzle (in core)</a></dt>
   <dd><small>Guzzle is a PHP HTTP client.</small></dd>
   <dt>Familiarity with Drupal 7 development</dt>
@@ -93,10 +93,9 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
   <li class="fragment">Install using Console</li>
   <li class="fragment">Create a Module using Console</li>
   <li class="fragment">Export Content Types using Console</li>
-  <li class="fragment">Export Views using Console</li>
-  <li class="fragment">Import Nodes using Guzzle</li>
-  <li class="fragment">Create a Service using Console</li>
   <li class="fragment">Create Admin Form using Console</li>
+  <li class="fragment">Create a Service using Console</li>
+  <li class="fragment">Import Nodes using Guzzle</li>
   <li class="fragment">Include your module using Composer</li>
   </ol>
 </section>
@@ -110,25 +109,11 @@ document.getElementsByTagName( 'head' )[0].appendChild( link );
 <section>
 <p><strong>1. Build using Composer</strong></p>
 
-<p>Download Drupal to a docroot so we can control the config.</p>
+<p>Download Drupal into the docroot.</p>
+<p><small><a href="https://www.lullabot.com/articles/goodbye-drush-make-hello-composer">Composer is a really exciting alternative</a> to Drush Make for building sites.</small></p>
 
-<pre><code data-trim data-noescape>$ composer create-project drupal/drupal docroot 8.0.2
+<pre><code data-trim data-noescape>$ composer create-project drupal/drupal docroot 8.0.5
 $ cd docroot
-</code></pre>
-</section>
-<! -- >
-<section>
-  <p>Managing patches using composer<p>
-  <p><small>For Drupal 8.0.5 only, we'll need to <a href="https://www.drupal.org/node/2664274">patch core</a>, but any module can be patched. </small></p>
-<pre><code data-trim data-noescape>
-$ composer require cweagans/composer-patches --no-update</code></pre>
-<pre><code data-trim data-noescape>"extra": {...
-  "patches": { 
-    "drupal/drupal": {
-      "Combination of --prefer-dist and .gitattributes confuses our vendor test cleanup": "https://www.drupal.org/files/issues/2664274-37.patch"
-    }
-  }
-}
 </code></pre>
 </section>
 <! -- >
@@ -145,7 +130,7 @@ $ composer require cweagans/composer-patches --no-update</code></pre>
 </section>
 <! -- >
 <section>
-  <p>Add <a href="https://packagist.drupal-composer.org">Drupal Composer</a> as a repo,<br/> so we can download drupal modules.</p>
+  <p>Add <a href="https://packagist.Drupal-composer.org">Drupal Composer</a> as a repo,<br/> so we can download Drupal modules.</p>
   <pre><code data-trim data-noescape>"repositories": [ { 
     "type": "composer", 
     "url": "https://packagist.drupal-composer.org"
@@ -157,37 +142,36 @@ $ composer require cweagans/composer-patches --no-update</code></pre>
 <! -- >
 <section>
 
-<p>Install some drupal modules!</p>
-<p><small>Composer Manager allows us to manage drupal modules as composer packaged,<br/> and we'll be using the <code>video_embed_field</code> in our demo.</small></p> 
-<pre><code data-trim data-noescape>$ composer require drupal/composer_manager:8.1.0-rc1 --no-update
+<p>Install some Drupal modules!</p>
+<p><small>
+  <a href="https://www.drupal.org/project/admin_toolbar">Admin Toolbar</a> improves the core Drupal toolbar,
+  <br/> and <a href="https://www.drupal.org/project/video_embed_field">Video Embed Field</a> is used in our demo.
+</small></p> 
+<pre><code data-trim data-noescape>$ composer require drupal/admin_toolbar:8.1.14 --no-update
 $ composer require drupal/video_embed_field:8.1.0-rc5 --no-update
 $ composer update
-$ php modules/contrib/composer_manager/scripts/init.php
 </code></pre>
 
 </section>
-
-
 
 <! 2. Install using Console -------------------------------------------------------------------->
 <section>
 <p><strong>2. Install using Console</strong></p>
 <pre><code data-trim data-noescape>$ drupal site:install
-$ drupal module:install composer_manager
+$ drupal module:install admin_toolbar
 $ drupal module:install video_embed_field
 </code></pre>
 </section>
 
 <section>
-<p>Change sync directory in settings.php to export config to <code>../docroot/config/sync</code>,<br/> and add <a href="https://www.drupal.org/node/2410395">Symfony's new trusted host patterns</a>.</p>
-
+<p>Move the configuration sync directory outside of the docroot,<br/> and add <a href="https://www.drupal.org/node/2410395">Symfony's new trusted host patterns</a>.</p>
+<! -- >
 <pre><code data-trim data-noescape>$config_directories['sync'] = '../config/sync';
 $settings['trusted_host_patterns'] = [ '^fastpaced.local$' ];
 </code></pre>
+<pre><code data-trim data-noescape>$ drupal config:export
+</code></pre>
 </section>
-
-
-
 
 <! 3. Create a Module using Console ------------------------------------------------------------------------>
 
@@ -243,26 +227,59 @@ Export content type in module as an optional configuration (yes/no) [yes]:
 
 </section>
 
-<! 5. Export Views using Console -------------------------------------------------------------------->
+<! 5. Create Admin form using Console -------------------------------------------------------------------->
 <section>
-<p><strong>5. Export Views using Console</strong></p>
+<p><strong>5. Create Admin form using Console</strong></p>
 
-<p>Sadly, you still have to point-and-click your way through views.</p>
+<pre><code data-trim data-noescape>$ drupal generate:form:config
 
-<p>But once that's done, we can export it in a flash!</p>
+Enter the Form Class name [DefaultForm]:
+&gt; ImportSettingsForm    
 
-<pre><code data-trim data-noescape>$ drupal config:export:view
-View to be exported [Archive]:
-&gt; Videos
-
-Export view in module as an optional configuration (yes/no) [yes]:
-&gt; no
-
-Include view module dependencies in module info YAML file (yes/no) [yes]:
+Do you want to generate a form structure? (yes/no) [yes]:
 &gt; y
+
+Type:          number
+Input label:   Import Max
+Description:   Maximum amount of nodes to import pre cron run
+Default value: 10
+
+Type:          textfield
+Input label:   Search Terms
+Description:   Feed to import from
+Default value: macaframa
+
+Update routing file (yes/no) [yes]:
+&gt; yes   
+
+
+Generate a menu link (yes/no) [yes]:
+&gt; yes
+
+A title for the menu link [ImportSettingsForm]:
+&gt; Fast Paced Import Settings
+
+Menu parent [system.admin_config_system]:
+&gt; system.admin_config_services
 </code></pre>
 
 </section>
+
+<! -->
+<section>
+<p><strong>Export the configuration settings.</strong></p>
+
+<pre><code data-trim data-noescape>$ drupal config:export:single --directory=modules/custom/fastpaced_videos/config/install
+  
+Configuration type [Simple configuration]:
+&gt; system.simple
+
+Configuration name [automated_cron.settings]:
+&gt; fastpaced_videos.importsettings
+</code></pre>
+</section>
+
+
 
 <! 6. Import Nodes using Guzzle -------------------------------------------------------------------->
 <section>
@@ -300,15 +317,12 @@ Enter the service name [fastpaced_videos.default]:
 Enter the Class name [DefaultService]:
 &gt; ImportService
 
-Create an interface (yes/no) [yes]:
-&gt; no
-
 Do you want to load services from the container (yes/no) [no]:
 &gt; yes
 
 Enter your service [ ]:
 &gt; entity.query
-&gt; manager
+&gt; entity_type.manager
 </code></pre>
 
 <p><small><a href="http://github.com/emarchak/fastpaced_videos">Refer to the repo</a> for further changes to <code>fastpaced_videos/src/ImportServiceInterface.php</code></small></p>
@@ -316,50 +330,9 @@ Enter your service [ ]:
 
 </section>
 
-
-
-<! 8. Create Admin form using Console -------------------------------------------------------------------->
+<! 8. Add your custom module to composer -------------------------------------------------------------------------------------->
 <section>
-<p><strong>8. Create Admin form using Console</strong></p>
-
-<pre><code data-trim data-noescape>$ drupal generate:form:config
-
-Enter the Form Class name [DefaultForm]:
-&gt; ImportSettingsForm    
-
-Do you want to generate a form structure? (yes/no) [yes]:
-&gt; y
-
-Type:          number
-Input label:   Import Max
-Description:   Maximum amount of nodes to import pre cron run
-Default value: 10
-
-Type:          textfield
-Input label:   Search Terms
-Description:   Feed to import from
-Default value: macaframa
-
-Update routing file (yes/no) [yes]:
-&gt; yes   
-
-
-Generate a menu link (yes/no) [yes]:
-&gt; yes
-
-A title for the menu link [ImportSettingsForm]:
-&gt; Fast Paced Import Settings
-
-Menu parent [system.admin_config_system]:
-&gt; system.admin_config_services
-</code></pre>
-
-
-</section>
-
-<! 9. Add your custom module to composer -------------------------------------------------------------------------------------->
-<section>
-  <p><strong>9. Add your custom module to composer</strong></p>
+  <p><strong>8. Add your custom module to composer</strong></p>
     <p>Add <a href="http://github.com/emarchak/fastpaced_videos">our github repo</a> as a repo, <br/>so we can can download our custom module.</p>
   <pre><code data-trim data-noescape>"repositories": [... { 
   "type": "git", 
@@ -378,7 +351,7 @@ Menu parent [system.admin_config_system]:
 <p>
 <a href="http://twitter.com/emarchak">@emarchak</a> / <a href="http://twitter.com/myplanetHQ">@myplanetHQ</a>
 </p>
-<p><small><a href="http://emarchak.github.io/fastpaced_drupal8/">emarchak.github.io/fastpaced_drupal8/</a> / 
+<p><small><a href="http://emarchak.github.io/fastpaced_drupal8/">emarchak.github.io/fastpaced_drupal8</a> / 
 <a href="http://github.com/emarchak/fastpaced_videos">github.com/emarchak/fastpaced_videos</a></small></p>
 </section>
 
