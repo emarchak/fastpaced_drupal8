@@ -118,9 +118,23 @@ $ cd docroot
 </section>
 <! -- >
 <section>
+<p>Managing patches using composer<p>
+<p><small>For Drupal 8.0.5 only, we'll need to <a href="https://www.drupal.org/node/2664274">patch core</a>, but any module can be patched. </small></p>
+<pre><code data-trim data-noescape>$ composer require cweagans/composer-patches --no-update
+</code></pre>
+<pre><code data-trim data-noescape>"extra": {...
+  "patches": {
+    "drupal/drupal": {
+      "Combination of --prefer-dist and .gitattributes confuses our vendor test cleanup": "https://www.drupal.org/files/issues/2664274-37.patch"
+  }
+}
+</code></pre>
+</section>
+<! -- >
+<section>
   <p>Add to installer paths to let us download modules to ./docroot/modules/contrib</p>
 <pre><code data-trim data-noescape>"extra": {...
-  "installer-paths": { 
+  "installer-paths": {
     "modules/contrib/{$name}": [
       "type:drupal-module"
     ] 
@@ -130,7 +144,7 @@ $ cd docroot
 </section>
 <! -- >
 <section>
-  <p>Add <a href="https://packagist.Drupal-composer.org">Drupal Composer</a> as a repo,<br/> so we can download Drupal modules.</p>
+  <p>Add <a href="https://packagist.drupal-composer.org">Drupal Composer</a> as a repo,<br/> so we can download Drupal modules.</p>
   <pre><code data-trim data-noescape>"repositories": [ { 
     "type": "composer", 
     "url": "https://packagist.drupal-composer.org"
